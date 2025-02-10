@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora do Amor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #fdecef;
+            color: #5a3e36;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 36px;
+        }
+        .heart {
+            color: red;
+            animation: heartbeat 1.5s infinite;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        p {
+            font-size: 18px;
+            font-weight: 300;
+        }
+        strong {
+            font-weight: 600;
+            color: #d6336c;
+        }
+        .dates {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: #d6336c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background-color: #a0254f;
+        }
+        .galeria {
+            display: none;
+            margin-top: 20px;
+        }
+        .galeria img {
+            width: 100px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        /* Estilo para a visualização da imagem ampliada */
+        .imagem-ampliada {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .imagem-ampliada img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+        .fechar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="dates">08/04/2024 até <span id="data-atual"></span></p>
+        <h1>João <span class="heart">♥</span> Keise</h1>
+        <p>Juntos por:</p>
+        <p><strong><span id="dias"></span></strong> dias</p>
+        <p>Isso é <strong><span id="horas"></span></strong> horas</p>
+        <p>Já vivemos:</p>
+        <p id="estacoes"></p>
+        <p>O João já aguentou:</p>
+        <p><strong><span id="tpm-dias"></span></strong> dias de TPM da Keise</p>
+        <p>Ou <strong><span id="tpm-horas"></span></strong> horas</p>
+        <p>Próximo aniversário:</p>
+        <p id="aniversarios"></p>
+        <button class="button" onclick="mostrarGaleria()">Fotos</button>
+        <div class="galeria" id="galeria"></div>
+    </div>
+
+    <!-- Div para exibir a imagem ampliada -->
+    <div class="imagem-ampliada" id="imagem-ampliada">
+        <button class="fechar" onclick="fecharImagem()">×</button>
+        <img id="imagem-grande" src="" alt="Imagem ampliada">
+    </div>
+
+    <script>
+        document.getElementById("data-atual").textContent = new Date().toLocaleDateString('pt-BR');
+
+        function calcularDados() {
+            let inicio = new Date("2024-04-08");
+            let hoje = new Date();
+            let diff = hoje - inicio;
+            let dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let horas = dias * 24;
+            document.getElementById("dias").textContent = dias;
+            document.getElementById("horas").textContent = horas;
+            
+            let estacoes = ["Verão", "Outono", "Inverno", "Primavera"];
+            let estacoesTexto = "";
+            let dataTemp = new Date(inicio);
+            let estacoesContador = { "Verão": 0, "Outono": 0, "Inverno": 0, "Primavera": 0 };
+            while (dataTemp <= hoje) {
+                let estacaoAtual = estacoes[Math.floor((dataTemp.getMonth() % 12) / 3)];
+                estacoesContador[estacaoAtual]++;
+                dataTemp.setMonth(dataTemp.getMonth() + 3);
+            }
+            for (let estacao in estacoesContador) {
+                if (estacoesContador[estacao] > 0) {
+                    estacoesTexto += `${estacoesContador[estacao]} ${estacao}s, `;
+                }
+            }
+            document.getElementById("estacoes").textContent = estacoesTexto.slice(0, -2);
+            
+            let tpmDias = Math.floor(dias / 28 * 5);
+            document.getElementById("tpm-dias").textContent = tpmDias;
+            document.getElementById("tpm-horas").textContent = tpmDias * 24;
+        }
+
+        function calcularAniversario() {
+            let hoje = new Date();
+            let aniversarios = [
+                { nome: "Keise", data: new Date(hoje.getFullYear(), 1, 19), nascimento: 1984 },
+                { nome: "João", data: new Date(hoje.getFullYear(), 3, 4), nascimento: 2007 }
+            ];
+
+            aniversarios.sort((a, b) => a.data - b.data);
+            let proximoAniversario = aniversarios.find(a => a.data >= hoje) || aniversarios[0];
+            let diasFaltando = Math.ceil((proximoAniversario.data - hoje) / (1000 * 60 * 60 * 24));
+            let idade = hoje.getFullYear() - proximoAniversario.nascimento;
+            if (proximoAniversario.data < hoje) idade++;
+
+            if (diasFaltando === 0) {
+                document.getElementById("aniversarios").innerHTML = `🎉 Hoje é aniversário de ${proximoAniversario.nome}! Parabéns pelos ${idade} anos! 🎂`;
+            } else {
+                document.getElementById("aniversarios").textContent = `Faltam ${diasFaltando} dias para o aniversário de ${proximoAniversario.nome} (${idade} anos)`;
+            }
+        }
+        calcularAniversario();
+
+        calcularDados();
+
+        function mostrarGaleria() {
+            let galeria = document.getElementById("galeria");
+            galeria.innerHTML = "";
+            galeria.style.display = "block";
+            for (let i = 1; i <= 50; i++) {
+                let img = new Image();
+                img.src = `fotos/${i}.jpg`;
+                img.onerror = function() { return; };
+                img.onload = function() {
+                    img.onclick = function() { ampliarImagem(this.src); };
+                    galeria.appendChild(img);
+                };
+            }
+        }
+
+        function ampliarImagem(src) {
+            document.getElementById("imagem-grande").src = src;
+            document.getElementById("imagem-ampliada").style.display = "flex";
+        }
+
+        function fecharImagem() {
+            document.getElementById("imagem-ampliada").style.display = "none";
+        }
+    </script>
+</body>
+</html>
